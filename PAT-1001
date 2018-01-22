@@ -1,0 +1,26 @@
+// PAT-1001
+//标准格式输出 a + b 的值
+#include<cstdio>
+int main()
+{
+    int a,b;
+    while(~scanf("%d %d",&a,&b)){
+        int c = a + b;
+        if(c < 0){
+            printf("-");
+            c = -c;
+        }
+        int o[10],nl = 1;
+        if(c == 0) printf("0");
+        while(c){
+            o[nl++] = c % 10;
+            c /= 10;
+        }
+        for(int i = nl - 1; i >= 1; i--){
+            if(i % 3 == 0 && i != nl - 1) printf(",");
+            printf("%d",o[i]);
+        }
+        puts("");
+    }
+    return 0;
+}
