@@ -1,0 +1,41 @@
+#include<cstdio>
+#include<vector>
+using namespace std;
+struct node{
+    int b,c;
+};
+vector <node> v[510];
+int t[510],vis[510],n,m,e,s,sum = 0,ans = 0,ss = 0x3f3f3f3f;
+void dfs(int p,int cut,int mt){
+    int pp = mt + t[p],ww;
+    if(p == e){
+        if(ss > cut) ss = cut,sum = 1,ans = pp;
+        else if(ss == cut) sum++,ans = max(pp,ans);
+        return ;
+    }
+    vis[p] = 1;
+    for(int i = 0; i < v[p].size(); i++){
+        int o = v[p][i].b;
+        if(!vis[o])
+             ww = cut + v[p][i].c,dfs(o,ww,pp);
+    }
+    vis[p] = 0;
+}
+int main()
+{
+    scanf("%d %d %d %d",&n,&m,&s,&e);
+    for(int i = 0; i < n; i++)
+        scanf("%d",&t[i]);
+    while(m--){
+        int a,b,c;
+        scanf("%d %d %d",&a,&b,&c);
+        node o;
+        o.b = b,o.c = c;
+        v[a].push_back(o);
+        o.b = a;
+        v[b].push_back(o);
+    }
+    dfs(s,0,0);
+    printf("%d %d\n",sum,ans);
+    return 0;
+}

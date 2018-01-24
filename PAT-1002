@@ -1,0 +1,23 @@
+#include<cstdio>
+double m[1010];
+int a[12],b[12];
+int main()
+{
+    int k1,k2;
+    double o;
+    scanf("%d",&k1);
+    for(int i = 1; i <= k1; i++)
+        scanf("%d %lf",&a[i],&o),m[a[i]] += o;
+    scanf("%d",&k2);
+    for(int i = 1; i <= k2; i++)
+        scanf("%d %lf",&b[i],&o),m[b[i]] += o;
+    int nl = 0;
+    for(int i = 1000; i >= 0; i--)
+        if(m[i] != 0)
+            nl++;
+    printf("%d",nl);
+    for(int i = 1000; i >= 0; i--)
+        if(m[i] != 0)
+            printf(" %d %.1lf",i,m[i]);
+    return 0;
+}
