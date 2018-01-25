@@ -1,0 +1,59 @@
+//PAT(甲级) - 1004
+// 每一层的叶子节点数
+// BFS
+#include<cstdio>
+#include<queue>
+#include<vector>
+using namespace std;
+vector <int> v[110];
+int vis[110],c[110],nll = 0;
+struct node{
+    int a,nl;
+};
+void BFS(int u,int nl){
+    vis[u] = 1;
+    queue <node> q;
+    for(int i = 0; i < v[u].size(); i++){
+        int a = v[u][i];
+        vis[a] = 1;
+        node o;
+        o.a = a,o.nl = 1;
+        nll = 1;
+        q.push(o);
+    }
+    while(!q.empty()){
+        node a = q.front();
+        q.pop();
+        int o = a.a,nl = a.nl;
+        if(v[o].size() == 0) c[nl]++;
+        else{
+            for(int i = 0; i < v[o].size(); i++){
+                int w = v[o][i];
+                if(vis[w]) continue;
+                vis[w] = 1;
+                node k;
+                k.nl = nl + 1,k.a = w;
+                nll = max(nll,k.nl);
+                q.push(k);
+            }
+        }
+    }
+}
+int main()
+{
+    int n,m,k,a,b;
+    scanf("%d %d",&n,&m);
+    while(m--){
+        scanf("%d %d",&a,&k);
+        while(k--){
+            scanf("%d",&b);
+            v[a].push_back(b);
+        }
+    }
+    BFS(1,0);
+    if(v[1].size() == 0) c[0]++;
+    for(int i = 0; i < nll; i++)
+        printf("%d ",c[i]);
+    printf("%d\n",c[nll]);
+    return 0;
+}
