@@ -1,0 +1,35 @@
+//多项式相乘 A * B 
+//指数相加，系数相乘
+#include<cstdio>
+#include<map>
+using namespace std;
+struct node{
+    int z;
+    double x;
+}a[1010],b[1010];
+map <int,double> ma;
+int main()
+{
+    int n,m;
+    scanf("%d",&n);
+    for(int i = 1; i <= n; i++)
+        scanf("%d %lf",&a[i].z,&a[i].x);
+    scanf("%d",&m);
+    for(int i = 1; i <= m; i++)
+        scanf("%d %lf",&b[i].z,&b[i].x);
+    for(int i = 1; i <= n; i++)
+        for(int j = 1; j <= m; j++){
+            int o = a[i].z + b[j].z;
+            ma[o] += a[i].x * b[j].x;
+        }
+    int nl = 0;
+    for(int i = 2000; i >= 0; i--)
+        if(ma[i])
+            nl++;
+    printf("%d",nl);
+    for(int i = 2000; i >= 0; i--)
+        if(ma[i])
+            printf(" %d %.1lf",i,ma[i]);
+    puts("");
+    return 0;
+}
