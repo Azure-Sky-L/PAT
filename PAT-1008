@@ -1,0 +1,16 @@
+//PAT-1008
+#include<cstdio>
+int main()
+{
+    int n,sum = 0,m = 0,a;
+    scanf("%d",&n);
+    while(n--){
+        scanf("%d",&a);
+        if(a < m) sum += 4 * (m - a) + 5;
+        else if(a > m) sum += 6 * (a - m) + 5;
+        else sum += 5;
+        m = a;
+    }
+    printf("%d\n",sum);
+    return 0;
+}
