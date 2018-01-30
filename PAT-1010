@@ -1,0 +1,54 @@
+//给出 A和B，以及其中一个数的进制，求另一个数的进制
+
+//另一个数的进制: 
+//下限为：该数中最大数 + 1 
+//上限为：另一个数 + 1 
+//二分查找，注意溢出
+
+#include<cstdio>
+#include<map>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+typedef long long LL;
+char a[15],b[15];
+int zh(char c){
+    if('0' <= c && c <= '9')
+        return c - '0';
+    else return c -'a' + 10;
+}
+LL bc(char s[],LL u){
+    LL sum = 0;
+    for(int i = 0; i < strlen(s); i++){
+        sum *= u;
+        sum += zh(s[i]);
+        if(sum < 0) return -1;
+    }
+    return sum;
+}
+int main()
+{
+    LL ans = 0,o,c;
+    scanf("%s %s %lld %lld",a,b,&o,&c);
+    int ok = 0,p,q = 2;
+    if(o == 2) swap(a,b);
+    for(int i = 0; i  < strlen(a); i++){
+        ans *= c;
+        ans += zh(a[i]);
+    }
+    for(int i = 0; i < strlen(b); i++)
+        q = max(q,zh(b[i] + 1));
+    LL r = ans + 1;
+    while(q <= r){
+        LL md = (q + r) / 2;
+        LL sum = bc(b,md);
+        if(sum == ans){
+            ok = md; break;
+        }
+        else if(sum == -1 || sum > ans) r = md - 1;
+        else q = md + 1;
+    }
+    if(ok) printf("%d\n",ok);
+    else puts("Impossible");
+    return 0;
+}
