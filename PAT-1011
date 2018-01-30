@@ -1,0 +1,21 @@
+//选取每一行中较大的三个数：a,b,c 
+//输出 (a * b * c * 0.65 - 1) * 2
+#include<cstdio>
+int main()
+{
+    double ans = 0.65;
+    for(int i = 1; i <= 3; i++){
+        double a[4];
+        int o = 1;
+        for(int j = 1; j <= 3; j++){
+            scanf("%lf",&a[j]);
+            if(a[j] > a[o]) o = j;
+        }
+        if(o == 1) printf("W ");
+        else if(o == 2) printf("T ");
+        else printf("L ");
+        ans *= a[o];
+    }
+    printf("%.2f\n",(ans - 1.0) * 2);
+    return 0;
+}
