@@ -1,0 +1,53 @@
+//按照这个优先级 A > C > M > E 
+//查找给出学号的学生最靠前的排名 
+//注：不可用 sort ，直接查找
+
+#include<cstdio>
+#include<map>
+#include<algorithm>
+#include<iostream>
+using namespace std;
+struct node{
+    int C,M,E,A,S;
+}st[2020];
+map <int,int> mm;
+int main()
+{
+    int n,m;
+    scanf("%d %d",&n,&m);
+    for(int i = 1; i <= n; i++){
+        cin >> st[i].S >> st[i].C >> st[i].M >> st[i].E;
+        st[i].A = (st[i].C + st[i].M + st[i].E) / 3.0;
+        mm[st[i].S] = i;
+    }
+    while(m--){
+        int o; scanf("%d",&o);
+        int nl = n + 1,j = mm[o];
+        char s;
+        if(mm[o]){
+            int sum = 0;
+            for(int i = 1; i <= n; i++)
+                if(st[j].A < st[i].A)
+                    sum++;
+            if(sum < nl) nl = sum,s = 'A';
+            sum = 0;
+            for(int i = 1; i <= n; i++)
+                if(st[j].C < st[i].C)
+                    sum++;
+            if(sum < nl) nl = sum,s = 'C';
+            sum = 0;
+            for(int i = 1; i <= n; i++)
+                if(st[j].M < st[i].M)
+                    sum++;
+            if(sum < nl) nl = sum,s = 'M';
+            sum = 0;
+            for(int i = 1; i <= n; i++)
+                if(st[j].E < st[i].E)
+                    sum++;
+            if(sum < nl) nl = sum,s = 'E';
+            printf("%d %c\n",nl + 1,s);
+        }
+        else puts("N/A");
+    }
+    return 0;
+}
