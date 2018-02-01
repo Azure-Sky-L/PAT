@@ -1,0 +1,38 @@
+/*
+有 n 个城市，以及哪些城市间有道路连接 
+当城市 a 被攻陷时，满足任意两个城市间可以连通，至少需要建多少条新路 
+并查集 不考虑 a 时，有多少个集合
+*/
+
+#include<cstdio>
+#include<map>
+#include<vector>
+using namespace std;
+int f[1010],a[1000010],b[1000010];
+int fn(int x){ return f[x] == x ? f[x] : f[x] = fn(f[x]); }
+void bc(int x,int y){
+    int fx = fn(x),fy = fn(y);
+    if(fx != fy)
+        f[fx] = fy;
+}
+int main()
+{
+    int n,m,k,o;
+    scanf("%d %d %d",&n,&m,&k);
+    for(int i = 1; i <= m; i++)
+        scanf("%d %d",&a[i],&b[i]);
+    while(k--){
+        scanf("%d",&o);
+        for(int i = 1; i <= n; i++) f[i] = i;
+        for(int i = 1; i <= m; i++){
+            if(a[i] == o || b[i] == o) continue;
+            bc(a[i],b[i]);
+        }
+        int cut = 0;
+        for(int i = 1; i <= n; i++)
+            if(i != o && f[i] == i)
+                cut++;
+        printf("%d\n",cut - 1);
+    }
+    return 0;
+}
