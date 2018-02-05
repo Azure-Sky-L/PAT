@@ -1,0 +1,67 @@
+/*
+给出 0～24 小时，每小时内的话费单价：分钟 / 美分 
+一些客户一个月内的通话记录，求每个客户的话费账单（按名字字典序打印客户账单） 
+sort 按名字、天、时、分排好序，根据相邻的名字、on-line/off-line 处理输出	
+*/
+#include<cstdio>
+#include<map>
+#include<algorithm>
+#include<iostream>
+using namespace std;
+int a[25];
+struct node{
+    string s;
+    char c[25];
+    int m,d,h,f;
+}st[1010];
+bool cmp(node i,node j){
+    if(i.s == j.s)
+        if(i.d == j.d)
+            if(i.h == j.h) return i.f < j.f;
+            else return i.h < j.h;
+        else return i.d < j.d;
+    else return i.s < j.s;
+}
+double mm(node i,node j){
+   double m = 0;
+   while(i.d < j.d || i.h < j.h || i.f < j.f){
+        m += a[i.h];
+        i.f++;
+        if(i.f == 60) i.f = 0,i.h++;
+        if(i.h == 24) i.h = 0,i.d++;
+   }
+   return m / 100;
+}
+int main()
+{
+    for(int i = 0; i < 24; i++)
+        scanf("%d",&a[i]);
+    int q,ans,ok,sy;
+    double sum;
+    scanf("%d",&q);
+    for(int i = 1; i <= q; i++)
+        cin >> st[i].s,scanf("%d:%d:%d:%d %s",&st[i].m,&st[i].d,&st[i].h,&st[i].f,st[i].c);
+    sort(st + 1,st + 1 + q,cmp);
+    for(int i = 1; i <= q; i++){
+        if(st[i].s != st[i - 1].s) sum = ok = sy = 0;
+        if(st[i].c[1] == 'n') ok = 1;
+        if(st[i].c[1]== 'f' && ok && st[i].s == st[i - 1].s){
+            ok = 0;
+            if(!sy){
+                cout << st[i].s;
+                printf(" %02d\n",st[i].m);
+                sy = 1;
+            }
+            printf("%02d:%02d:%02d ",st[i - 1].d,st[i - 1].h,st[i - 1].f);
+            printf("%02d:%02d:%02d ",st[i].d,st[i].h,st[i].f);
+            ans = st[i].f - st[i - 1].f + 60 * (st[i].h - st[i - 1].h) + 60 * 24 * (st[i].d - st[i - 1].d);
+            printf("%d ",ans);
+            double cut = mm(st[i - 1],st[i]);
+            printf("$%.2f\n",cut);
+            sum += cut;
+        }
+        if(st[i].s != st[i + 1].s && sum != 0)
+            printf("Total amount: $%.2f\n",sum);
+    }
+    return 0;
+}
