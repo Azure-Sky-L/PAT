@@ -1,0 +1,77 @@
+/*
+杭州有一些共享单车，有 n 个停车点，每个停车点现在有 a[i] 辆车
+有一个 PBMC（0点），现在需要从 PBMC 调车平衡目标车站的车辆数：即把目标车站的车辆数变为 c / 2 辆，多余的运回，不够的可以用刚刚回收的车进行补给，若仍不够，一开始需要从 PBMC 带上一定补给的车辆，最后仍多余的运回 PBMC
+在满足以下三个条件的前提下，平衡从 PBMC 调车平衡车站 o： 
+1.距离最短，并沿途平衡 PBMC 和 o 之间所有车站的车辆
+2.满足 1，需要从 PBMC 补给的车尽可能的少
+3.满足 2，需要从PBMC 运回的车尽可能的少
+首先 dj 建立到 PBMC 的最短路径的网络，并建立到每个车站最近的车站关系
+从目标车站开始向 PBMC 搜索，并记录下沿途经过的车站
+搜到 PBMC 后结束本次搜索，按照上面的条件，更新最优解
+*/
+
+#include<cstdio>
+#include<vector>
+#include<algorithm>
+using namespace std;
+const int MAX = 510;
+const int INF = 0x3f3f3f3f / 2;
+vector <int> v[MAX],vv,vp;
+int d[MAX][MAX],a[MAX],dis[MAX],vis[MAX],ans,sum,c,n,o,m;
+void dj(){
+    fill(vis,vis + MAX,0);
+    fill(dis,dis + MAX,INF);
+    dis[0] = 0;
+    while(true){
+        int u = -1;
+        for(int i = 0; i <= n; i++)
+            if(!vis[i] && (u == -1 || dis[u] > dis[i]))
+                u = i;
+        if(u == -1) break;
+        vis[u] = 1;
+        for(int i = 1; i <= n; i++)
+            if(dis[i] > dis[u] + d[u][i])
+                dis[i] = dis[u] + d[u][i],v[i].clear(),v[i].push_back(u); // 向前搜索，向 0 的方向
+            else if(dis[i] == dis[u] + d[u][i])
+                v[i].push_back(u);
+    }
+    return ;
+}
+void dfs(int x){
+    vp.push_back(x); // 沿途经过的城市
+    if(x == 0){
+        int nl = 0,pl = 0; // 最少需要派出的车辆和最少需要回收的车辆
+        for(int i = vp.size() - 2; i >= 0; i--){ // 不计算 PBMC
+            int w = vp[i];
+            pl += a[w] - c / 2; // c 保证为偶数，需要回收
+            if(pl < 0) nl -= pl,pl = 0; // 必需从 PBMC 发车
+        }
+        if(nl < sum) sum = nl,ans = pl,vv = vp;
+        if(nl == sum && pl < ans) ans = pl,vv = vp;
+        return ;
+    }
+    for(int i = 0; i < v[x].size(); i++)
+        dfs(v[x][i]),vp.pop_back(); // vp 清除最后一个元素
+    return ;
+}
+int main()
+{
+    scanf("%d %d %d %d",&c,&n,&o,&m);
+    for(int i = 1; i <= n; i++)
+        scanf("%d",&a[i]);
+    for(int i = 0; i <= n; i++)
+        fill(d[i],d[i] + 1 + n,INF);
+    while(m--){
+        int x,y,z;
+        scanf("%d %d %d",&x,&y,&z);
+        d[x][y] = d[y][x] = z;
+    }
+    dj();
+    ans = sum = INF;
+    dfs(o);
+    printf("%d 0",sum); // 需要派出多少车辆
+    for(int i = vv.size() - 2; i >= 0; i--)
+        printf("->%d",vv[i]);
+    printf(" %d\n",ans); // 需要回收多少车辆
+    return 0;
+}
