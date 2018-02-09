@@ -1,0 +1,54 @@
+/*
+有 m 个服务窗口（服务时间 08：00：00 ～17：00：00）
+以及 n 位客户的到达时间和服务时间
+求被服务客户的平均等待时间
+对于每个窗口： 
+若该窗口的结束时间 < 下一位客户的到达时间 ：该窗口的开始时间 = 该客户的到达时间
+若该窗口的结束时间 >下一位客户的到达时间 : 等待时间 += 若该窗口的结束时间 -下一位客户的到达时间
+该窗口的结束时间 += 该客户被服务的时间
+对于每位客户： 
+寻找结束时间最早的窗口
+*/
+
+#include<cstdio>
+#include<algorithm>
+using namespace std;
+int t[110],q[110];
+struct node{
+    int w,d;
+}st[10010];
+bool cmp(node i,node j){ return i.d < j.d; }
+int main()
+{
+    int n,m,h,f,s,w;
+    scanf("%d %d",&n,&m);
+    for(int i = 1; i <= n; i++){
+        scanf("%d:%d:%d %d",&h,&f,&s,&w);
+        st[i].w = w * 60;
+        st[i].d = h * 3600 + f * 60 + s;
+    }
+    sort(st + 1,st + n + 1,cmp);
+    int nl = 0,pl = n;
+    double ans = 0;
+    for(int i = 0; i < m; i++){
+        t[i] = 28800,q[i] = ++nl;
+        if(t[i] > st[nl].d) ans += t[i] - st[nl].d;
+        else t[i] = st[nl].d;
+    }
+    while(nl < n){
+        int u = 0;
+        for(int i = 0; i < m; i++)
+            if(st[q[u]].w + t[u] > st[q[i]].w + t[i])
+                u = i;
+        if(st[nl + 1].d > 17 * 3600) break;
+        t[u] += st[q[u]].w;
+        nl++;
+        if(t[u] <= st[nl].d) t[u] = st[nl].d;
+        else ans += t[u] - st[nl].d;
+        q[u] = nl;
+    }
+    if(nl)
+        printf("%.1f\n",ans / 60 / nl);
+    else puts("0.0");
+    return 0;
+}
